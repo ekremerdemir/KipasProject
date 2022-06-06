@@ -1,0 +1,114 @@
+
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Kipaþ Case Solution</h2>
+
+<div class="alert alert-primary" role="alert">
+    Entity Framework "Seed Data" özelliði ile test veri eklenmiþtir
+</div>
+<div class="alert alert-secondary" role="alert">
+    Bu proje ASP .Net MVC ( c# ) kullanýlýmýþtýr
+</div>
+<div class="alert alert-success" role="alert">
+    Sql Server kullanýldý.(Server da "EmployeDb" adýnda veri tabaný oluþacatýr.)
+</div>
+<div class="alert alert-danger" role="alert">
+    Entity Framework Ýle Code First Yaklaþýmý ("DropCreateDatabaseIfModelChanges") kullanýldý
+</div>
+<div class="alert alert-warning" role="alert">
+    Entity Framework "Seed Data" özelliði ile test veri eklenmiþtir
+</div>
+<div class="alert alert-info" role="alert">
+    Bu proje ASP .Net MVC ( c# ) kullanýlýmýþtýr
+</div>
+<div class="alert alert-dark" role="alert">
+    Sql Server kullanýldý
+</div>
+
+<div id="data-grid-demo">
+    @(Html.DevExtreme().DataGrid<KipasProject.Models.Entity.Employee>()
+        .ID("gridContainer")
+        .ShowBorders(true)
+        .Paging(p => p.Enabled(false))
+         .Editing(e => e.Mode(GridEditMode.Popup)
+            .AllowUpdating(true)
+            .Popup(p => p
+                .Title("Employee Info")
+                .ShowTitle(true)
+                .Width(700)
+                .Height(525)
+            )
+            .Form(f => f.Items(items =>
+            {
+                items.AddGroup()
+                    .ColCount(2)
+                    .ColSpan(2)
+                    .Items(groupItems =>
+                    {
+                        groupItems.AddSimpleFor(m => m.FirstName);
+                        groupItems.AddSimpleFor(m => m.LastName);
+                        groupItems.AddSimpleFor(m => m.Prefix);
+                        groupItems.AddSimpleFor(m => m.BirthDate);
+                        groupItems.AddSimpleFor(m => m.Position);
+                        groupItems.AddSimpleFor(m => m.HireDate);
+
+                        groupItems.AddSimpleFor(m => m.Notes)
+                            .ColSpan(2)
+                            .Editor(editor => editor.TextArea().Height(100));
+                    });
+
+                items.AddGroup()
+                    .Caption("Home Address")
+                    .ColCount(2)
+                    .ColSpan(2)
+                    .Items(groupItems =>
+                    {
+                        groupItems.AddSimpleFor(m => m.CityID);
+                        groupItems.AddSimpleFor(m => m.Address);
+                    });
+            }))
+        )
+
+         //colum
+         .Columns(columns =>
+         {
+
+             columns.AddFor(m => m.Prefix)
+                 .Width(70);
+
+             columns.AddFor(m => m.FirstName);
+
+             columns.AddFor(m => m.LastName);
+
+             columns.AddFor(m => m.BirthDate);
+
+             columns.AddFor(m => m.Position)
+                 .Width(170);
+
+             columns.AddFor(m => m.HireDate);
+
+             columns.AddFor(m => m.CityID)
+                 .Width(125)
+                 .Lookup(lookup => lookup
+                     .DataSource(d => d.WebApi().Controller("CityLookup").LoadAction("Get").Key("CityID"))
+                     .DisplayExpr("Name")
+                     .ValueExpr("CityID")
+                 );
+
+             columns.AddFor(m => m.Address)
+                 .Visible(false);
+
+             columns.AddFor(m => m.Notes)
+                 .Visible(false);
+         })
+
+
+        .DataSource(d => d.WebApi().Controller("Employees").UpdateAction(true).Key("ID"))
+
+    )
+</div>
+
+
